@@ -2,7 +2,14 @@
 
 A simple image hosting application written in Django.
 
-This project is primarily used to demonstrate how to [deploy](https://github.com/duplxey/django-images#want-to-learn-how-to-deploy-this-project) Django to various platforms.
+This is a clone of the following project: https://github.com/duplxey/django-images  
+The project is used as a demo application for practice deployment to Azure. The Terraform code for the deployment can be found here: https://github.com/G-Sarkadi/django-infra. I've mostly followed this tutorial for setup the deployment: https://testdriven.io/blog/django-azure-app-service/  
+My changes from the original repository:
+- The debug status, secret key, allowed hosts and secure ssl redirection setups are now set by environment variables (settings.py)
+- The database is changed from SQlite to PostgreSQL, the database host, name, username and password also comes from environment variables (also settings.py)
+- The server is changed from Django's development server to Gunicorn
+- Static and media files are stored in an Azure blob storage, the details for this also set by env variables (settings.py)
+- These two blob storage need two new classes, those are defined in a new 'azure_storage.py' file.
 
 ## Want to use this project?
 
@@ -19,26 +26,32 @@ This project is primarily used to demonstrate how to [deploy](https://github.com
     ```sh
     (venv)$ pip install -r requirements.txt
     ```
+4. Create a .env file, leave it out from version control, set up the necessary environmental variables:
+    ```sh
+    SECRET_KEY = "django-app-unsafe-key"
+    DEBUG = "debug-status-0-or-1"
+    ALLOWED_HOSTS = "list-of-allowed-hosts"
+    CSRF_TRUSTED_ORIGINS = "list-of-trusted-origins"
+    SECURE_SSL_REDIRECT = "ssl-redirection-status-0-or-1"
+    DBNAME = "postgresql-db-name"
+    DBHOST = "postgresql-db-host"
+    DBUSER = "postgresql-db-username"
+    DBPASS = "postgresql-db-unsafe-password"
+    AZURE_ACCOUNT_NAME = "azure-storage-account-name"
+    AZURE_ACCOUNT_KEY = "azure-storage-account-primary-key"
+    ```
 
-4. Apply the migrations:
+5. Apply the migrations:
 
     ```sh
     (venv)$ python manage.py migrate
     ```
 
-5. Run the server:
+6. Run the server:
 
     ```sh
     (venv)$ python manage.py runserver
     ```
     
- 6. Navigate to [http://localhost:8000/](http://localhost:8000/) in your favorite web browser.
-
-## Want to learn how to deploy this project?
-
-- [Google App Engine](https://testdriven.io/blog/django-gae/)
-- [AWS Elastic Beanstalk](https://testdriven.io/blog/django-elastic-beanstalk/)
-- [Render](https://testdriven.io/blog/django-render/)
-- [Fly.io](https://testdriven.io/blog/django-fly/)
-- [Dokku](https://testdriven.io/blog/django-dokku/)
-
+ 7. Navigate to the url of the running application in your favorite web browser.  
+ Check out the linked tutorial or the infrastructure repo for details.
